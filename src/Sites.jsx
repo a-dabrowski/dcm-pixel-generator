@@ -19,12 +19,12 @@ class Sites extends Component {
         selected: false, 
         selection: ''    
     }
-   options = this.props.sites;
+   options = this.props.data;
     render() {
       console.log(this.options)
         return (<select name="Sites">
             {this.options.map((el) => {
-                return <option value={el[1]}>{el[0]}</option>
+                return <option key={el[1]} value={el[1]}>{el[0]}</option>
             })}
         </select>);
     }
