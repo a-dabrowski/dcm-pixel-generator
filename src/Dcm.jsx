@@ -4,7 +4,10 @@ class Dcm extends Component {
   state = {
     logged: false,
     advertisers: null,
-    sites: null
+    sites: null,
+    selectedAdvertiser: null,
+    selectedCampaign: null,
+    selectedSites: []
   };
   gapi = window.gapi;
   profieId = process.env.REACT_APP_PROFILE;
@@ -27,6 +30,9 @@ class Dcm extends Component {
           logged: this.gapi.auth2.getAuthInstance().isSignedIn.get()
         });
         //TODO: listeners for authorize and signout click
+      })
+      .then(() => {
+        this.getAdvertisers();
       });
   };
 
@@ -75,6 +81,12 @@ class Dcm extends Component {
       );
   }
 
+  handleSelect(event) {
+    this.setState({
+      selectedAdvertiser: event.target.value
+    });
+  }
+
   componentWillMount() {
     this.gapi.load("client:auth2", this.initClient);
   }
@@ -82,14 +94,15 @@ class Dcm extends Component {
   render() {
     return (
       <div>
-        <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button>
+        {/* <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button> */}
         <button onClick={this.getSites.bind(this)}>load sites</button>
         {this.state.sites ? <Sites data={this.state.sites} /> : "false"}
         {this.state.advertisers ? (
-          <Sites data={this.state.advertisers} />
+          <Sites data={this.state.advertisers} handleSelect={this.handleSelect.bind(this)} />
         ) : (
           "false"
-        )}
+          )}
+        
       </div>
     );
   }
