@@ -7,7 +7,7 @@ class Dcm extends Component {
     sites: null,
     selectedAdvertiser: null,
     selectedCampaign: null,
-    selectedSites: []
+    selectedSites: null
   };
   gapi = window.gapi;
   profieId = process.env.REACT_APP_PROFILE;
@@ -85,6 +85,12 @@ class Dcm extends Component {
     this.setState({
       selectedAdvertiser: event.target.value
     });
+    console.log('dcm');
+    this.getSites();
+  }
+
+  handleSiteSelect = (event) => {
+    this.setState({ selectedSites: event.target.value });
   }
 
   componentWillMount() {
@@ -95,13 +101,11 @@ class Dcm extends Component {
     return (
       <div>
         {/* <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button> */}
-        <button onClick={this.getSites.bind(this)}>load sites</button>
-        {this.state.sites ? <Sites data={this.state.sites} /> : "false"}
-        {this.state.advertisers ? (
-          <Sites data={this.state.advertisers} handleSelect={this.handleSelect.bind(this)} />
-        ) : (
-          "false"
-          )}
+        
+        {this.state.sites ? <Sites name="Site" data={this.state.sites} handleSelect={this.handleSiteSelect} /> : "Select Advertiser" }{}
+        {this.state.advertisers ? (<Sites name="Advertiser" data={this.state.advertisers} handleSelect={this.handleSelect.bind(this)} />) : ("Loading...")}
+        <h1>{this.state.selectedAdvertiser || "Placeholder for Advertiser"}</h1>
+        <h2>{this.state.selectedSites || "Placeholder for Sites"}</h2>
         
       </div>
     );
