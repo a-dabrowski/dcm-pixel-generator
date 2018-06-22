@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Sites from "./Sites.jsx";
+import OptionList from "./OptionList.jsx";
 class Dcm extends Component {
   state = {
     logged: false,
@@ -83,45 +83,77 @@ class Dcm extends Component {
   }
 
   getCampaigns(advertiserId) {
+    console.log(advertiserId);
     this.gapi.client
-    .request({
-path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${this.profieId}/campaigns?advertiserIds=${advertiserId}&key=${this.apiKey}`
-    })
-    .then(res => this.setState({campaigns: res.result.campaigns.map(el => [el.name, el.id])}));
- 
+      .request({
+        path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
+          this.profieId
+        }/campaigns?advertiserIds=${advertiserId}&key=${this.apiKey}`
+      })
+      .then(res =>
+        this.setState({
+          campaigns: res.result.campaigns.map(el => [el.name, el.id])
+        })
+      )
+      .then(_ => console.log(this.state.campaigns));
+    console.log(this.state.campaigns);
   }
 
   handleSelect(event) {
     this.setState({
       selectedAdvertiser: event.target.value
     });
-    console.log('dcm', this.state.selectedAdvertiser);
+    console.log("dcm", this.state.selectedAdvertiser);
     this.getSites();
-    this.getCampaigns(event.target.value);
+    this.getCampaigns(event.target.value); // doesnt change rendered campaigns
   }
 
-  handleSiteSelect = (event) => {
+  handleSiteSelect = event => {
     this.setState({ selectedSites: event.target.value });
-  }
+  };
 
   componentWillMount() {
     this.gapi.load("client:auth2", this.initClient);
   }
-  handleCampaignSelect = (event) => {
-    this.setState({selectedCampaign: event.target.value});
-}
+  handleCampaignSelect = event => {
+    this.setState({ selectedCampaign: event.target.value });
+  };
   render() {
     return (
       <div>
         {/* <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button> */}
-        
-        {this.state.sites ? <Sites name="Site" data={this.state.sites} handleSelect={this.handleSiteSelect} /> : "Select Advertiser" }{}
-        {this.state.advertisers ? (<Sites name="Advertiser" data={this.state.advertisers} handleSelect={this.handleSelect.bind(this)} />) : ("Loading...")}
-        {this.state.campaigns ? <Sites name="Campaign" data={this.state.campaigns} handleSelect={this.handleCampaignSelect} /> : "Select Advertiser"}
+
+        {this.state.sites ? (
+          <OptionList
+            name="Site"
+            data={this.state.sites}
+            handleSelect={this.handleSiteSelect}
+          />
+        ) : (
+          "Select Advertiser"
+        )}
+        {}
+        {this.state.advertisers ? (
+          <OptionList
+            name="Advertiser"
+            data={this.state.advertisers}
+            handleSelect={this.handleSelect.bind(this)}
+          />
+        ) : (
+          "Loading..."
+        )}
+        {this.state.campaigns ? (
+          <OptionList
+            name="Campaign"
+            data={this.state.campaigns}
+            handleSelect={this.handleCampaignSelect}
+          />
+        ) : (
+          "Select Advertiser"
+        )}
         <h1>{this.state.selectedAdvertiser || "Placeholder for Advertiser"}</h1>
         <h2>{this.state.selectedSites || "Placeholder for Sites"}</h2>
         <h3>{this.state.selectedCampaign || "Placeholder for Campaign"}</h3>
-        
       </div>
     );
   }
