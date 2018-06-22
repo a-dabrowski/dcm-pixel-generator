@@ -5,6 +5,7 @@ class Dcm extends Component {
     logged: false,
     advertisers: null,
     sites: null,
+    campaigns: null,
     selectedAdvertiser: null,
     selectedCampaign: null,
     selectedSites: null
@@ -81,12 +82,22 @@ class Dcm extends Component {
       );
   }
 
+  getCampaigns(advertiserId) {
+    this.gapi.client
+    .request({
+path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${this.profieId}/campaigns?advertiserIds=${advertiserId}&key=${this.apiKey}`
+    })
+    .then(res => this.setState({campaigns: res.result.campaigns.map(el => [el.name, el.id])}));
+ 
+  }
+
   handleSelect(event) {
     this.setState({
       selectedAdvertiser: event.target.value
     });
-    console.log('dcm');
+    console.log('dcm', this.state.selectedAdvertiser);
     this.getSites();
+    this.getCampaigns(event.target.value);
   }
 
   handleSiteSelect = (event) => {
@@ -96,7 +107,9 @@ class Dcm extends Component {
   componentWillMount() {
     this.gapi.load("client:auth2", this.initClient);
   }
-
+  handleCampaignSelect = (event) => {
+    this.setState({selectedCampaign: event.target.value});
+}
   render() {
     return (
       <div>
@@ -104,8 +117,10 @@ class Dcm extends Component {
         
         {this.state.sites ? <Sites name="Site" data={this.state.sites} handleSelect={this.handleSiteSelect} /> : "Select Advertiser" }{}
         {this.state.advertisers ? (<Sites name="Advertiser" data={this.state.advertisers} handleSelect={this.handleSelect.bind(this)} />) : ("Loading...")}
+        {this.state.campaigns ? <Sites name="Campaign" data={this.state.campaigns} handleSelect={this.handleCampaignSelect} /> : "Select Advertiser"}
         <h1>{this.state.selectedAdvertiser || "Placeholder for Advertiser"}</h1>
         <h2>{this.state.selectedSites || "Placeholder for Sites"}</h2>
+        <h3>{this.state.selectedCampaign || "Placeholder for Campaign"}</h3>
         
       </div>
     );
