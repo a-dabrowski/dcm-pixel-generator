@@ -1,5 +1,19 @@
 import React, { Component } from "react";
 import OptionList from "./OptionList.jsx";
+import Loading from './Loading.jsx';
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = theme => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 200
+  }
+});
+
 class Dcm extends Component {
   state = {
     logged: false,
@@ -119,44 +133,52 @@ class Dcm extends Component {
     this.setState({ selectedCampaign: event.target.value });
   };
   render() {
+    const { classes } = this.props;
     return (
       <div>
-        {/* <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button> */}
+        <form className={classes.root} autoComplete="off">
+          {/* <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button> */}
 
-        {this.state.sites ? (
-          <OptionList
-            name="Site"
-            data={this.state.sites}
-            handleSelect={this.handleSiteSelect}
-          />
-        ) : (
-          "Select Advertiser"
-        )}
-        {}
-        {this.state.advertisers ? (
-          <OptionList
-            name="Advertiser"
-            data={this.state.advertisers}
-            handleSelect={this.handleSelect.bind(this)}
-          />
-        ) : (
-          "Loading..."
-        )}
-        {this.state.campaigns ? (
-          <OptionList
-            name="Campaign"
-            data={this.state.campaigns}
-            handleSelect={this.handleCampaignSelect}
-          />
-        ) : (
-          "Select Advertiser"
-        )}
-        <h1>{this.state.selectedAdvertiser || "Placeholder for Advertiser"}</h1>
-        <h2>{this.state.selectedSites || "Placeholder for Sites"}</h2>
-        <h3>{this.state.selectedCampaign || "Placeholder for Campaign"}</h3>
+          {this.state.sites ? (
+            <OptionList
+              name="Site"
+              data={this.state.sites}
+              handleSelect={this.handleSiteSelect}
+            />
+          ) : (
+            "Select Advertiser"
+          )}
+          {}
+          {this.state.advertisers ? (
+            <OptionList
+              name="Advertiser"
+              data={this.state.advertisers}
+              handleSelect={this.handleSelect.bind(this)}
+            />
+          ) : (
+           <Loading />
+          )}
+          {this.state.campaigns ? (
+            <OptionList
+              name="Campaign"
+              data={this.state.campaigns}
+              handleSelect={this.handleCampaignSelect}
+            />
+          ) : (
+            "Select Advertiser"
+          )}
+        </form>
+
+        <div>
+          <h1>
+            {this.state.selectedAdvertiser || "Placeholder for Advertiser"}
+          </h1>
+          <h2>{this.state.selectedSites || "Placeholder for Sites"}</h2>
+          <h3>{this.state.selectedCampaign || "Placeholder for Campaign"}</h3>
+        </div>
       </div>
     );
   }
 }
 
-export default Dcm;
+export default withStyles(styles)(Dcm);
