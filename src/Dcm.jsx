@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import OptionList from "./OptionList.jsx";
 import Loading from './Loading.jsx';
+import Button from '@material-ui/core/Button';
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
@@ -11,8 +12,63 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 200
+  },
+  button: {
+    margin: theme.spacing.unit
   }
 });
+
+
+//creative
+//type (z palca) np Display -> creative advertiser
+
+
+
+//20843892 campaign id
+// placemnt crate -> give site id - > campaign id ->
+
+  //   "domain": "global",
+  //   "reason": "invalid",
+  //   "message": "11032 : Placement must have at least one tag format of its placement type." ARRAY OF CAPSLOCK VALUES
+  //  },
+  //  {
+  //   "domain": "global",
+  //   "reason": "required",
+  //   "message": "11096 : Placement rendering environment is required."
+  //  },
+  //  {
+  //   "domain": "global",
+  //   "reason": "required",
+  //   "message": "11029 : Placement pricing type is required."
+  //  },
+  //  {
+  //   "domain": "global",
+  //   "reason": "required",
+  //   "message": "11027 : Placement end date is required."
+  //  },
+  //  {
+  //   "domain": "global",
+  //   "reason": "required",
+  //   "message": "11026 : Placement start date is required."
+  //  },
+  //  {
+  //   "domain": "global",
+  //   "reason": "invalid",
+  //   "message": "11022 : Placement start date must be before or same as end date."
+  //  },
+  //  {
+  //   "domain": "global",
+  //   "reason": "required",
+  //   "message": "11020 : Placement name is required."
+  //  },
+  //  {
+  //   "domain": "global",
+  //   "reason": "required",
+  //   "message": "11085 : Placement payment source is required."
+  //  }
+  // ],
+  // "code": 400,
+  // "message": "11032 : Placement must have at least one tag format of its placement type."
 
 class Dcm extends Component {
   state = {
@@ -31,6 +87,7 @@ class Dcm extends Component {
   scopes =
     "https://www.googleapis.com/auth/dfareporting https://www.googleapis.com/auth/dfatrafficking";
   initClient = () => {
+    console.log('client init')
     this.gapi.client
       .init({
         apiKey: this.apiKey,
@@ -44,11 +101,12 @@ class Dcm extends Component {
         this.setState({
           logged: this.gapi.auth2.getAuthInstance().isSignedIn.get()
         });
+        console.log(this.gapi.auth2.getAuthInstance().isSignedIn.get());
         //TODO: listeners for authorize and signout click
       })
       .then(() => {
         this.getAdvertisers();
-      });
+      }).catch(err=>console.log(err));
   };
 
   getAdvertisers() {
@@ -117,18 +175,16 @@ class Dcm extends Component {
     this.setState({
       selectedAdvertiser: event.target.value
     });
-    console.log("dcm", this.state.selectedAdvertiser);
     this.getSites();
     this.getCampaigns(event.target.value); // doesnt change rendered campaigns
   }
-
+  handleAuthorize = event => {
+    this.gapi.load('client:auth2', this.initClient);
+  }
   handleSiteSelect = event => {
     this.setState({ selectedSites: event.target.value });
   };
 
-  componentWillMount() {
-    this.gapi.load("client:auth2", this.initClient);
-  }
   handleCampaignSelect = event => {
     this.setState({ selectedCampaign: event.target.value });
   };
@@ -170,6 +226,7 @@ class Dcm extends Component {
         </form>
 
         <div>
+          <Button variant="contained" color="primary" className={classes.button} onClick={this.handleAuthorize}>Authorize</Button>
           <h1>
             {this.state.selectedAdvertiser || "Placeholder for Advertiser"}
           </h1>
