@@ -34,8 +34,8 @@ export function initClient() {
         });
 };
 
-export function getAdvertisers (){
-  gapi.client
+export function getAdvertisers() {
+    gapi.client
         .request({
             path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
           profileId
@@ -43,7 +43,14 @@ export function getAdvertisers (){
         })
         .then(
             res => {
-                const advertisers = res.result.advertisers.map(el => [
+                const sorted = res.result.advertisers.sort((a, b) => {
+                    if (a.name < b.name) {
+                        return -1
+                    } else {
+                        return 1;
+                    }
+                })
+                const advertisers = sorted.map(el => [
                     el.name,
                     el.id,
                     el.accountId
@@ -67,7 +74,14 @@ export function getSites() {
         })
         .then(
             res => {
-                const sites = res.result.sites.map(el => [
+                const sorted = res.result.sites.sort((a, b) => {
+                    if (a.name < b.name) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                })
+                const sites = sorted.map(el => [
                     el.name,
                     el.id,
                     el.accountId
@@ -89,34 +103,48 @@ export function getCampaigns(advertiserId) {
           profileId
         }/campaigns?advertiserIds=${advertiserId}&key=${apiKey}`
         })
-        .then(res =>
-            this.setState({
-                campaigns: res.result.campaigns.map(el => [el.name, el.id, el.startDate, el.endDate])
+        .then(res => {
+            const sorted = res.result.campaigns.sort((a, b) => {
+                if (a.name < b.name) {
+                    return -1;
+                } else {
+                    return 1;
+                }
             })
-        )
-        .then(_ => console.log(this.state.campaigns));
+            this.setState({
+                campaigns: sorted.map(el => [el.name, el.id, el.startDate, el.endDate])
+            })
+        })
 }
 
-  export function getAds(advertiserId, campaignId) {
+export function getAds(advertiserId, campaignId) {
     gapi.client
-      .request({
-        path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
+        .request({
+            path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
           profileId
         }/ads?advertiserIds=${advertiserId}&campaignIds=${campaignId}&key=${
           apiKey
         }`
-      })
-      .then(res => {
-        this.setState({
-          ads: res.result.ads.map(el => [
-            el.name,
-            el.id,
-            el.placementAssigments,
-            el.creativeRotation.creativeAssignments
-          ])
+        })
+        .then(res => {
+            const sorted = res.result.ads.sort((a, b) => {
+                if (a.name < b.name) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+
+            })
+            this.setState({
+                ads: sorted.map(el => [
+                    el.name,
+                    el.id,
+                    el.placementAssigments,
+                    el.creativeRotation.creativeAssignments
+                ])
+            });
         });
-      });
-  }
+}
 
 export function createPlacement(name, advertiserId, siteId, campaignId, height, width, startDate, endDate) {
     const dimensions = 'dynamic';
@@ -147,4 +175,3 @@ export function createPlacement(name, advertiserId, siteId, campaignId, height, 
         }
     };
 }
-
