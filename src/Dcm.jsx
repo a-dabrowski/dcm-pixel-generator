@@ -12,7 +12,9 @@ const styles = theme => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
-    width: "100%",
+    flexDirection: "column",
+    width: "75%",
+    margin:"auto",
     justifyContent: "space-around"
   },
   formControl: {
