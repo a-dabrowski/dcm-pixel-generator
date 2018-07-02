@@ -127,6 +127,7 @@ export function getAds(advertiserId, campaignId) {
         }`
         })
         .then(res => {
+        
             const sorted = res.result.ads.sort((a, b) => {
                 if (a.name < b.name) {
                     return -1;
@@ -134,7 +135,8 @@ export function getAds(advertiserId, campaignId) {
                     return 1;
                 }
 
-            })
+            });
+            console.log(sorted[1].placementAssigments);
             this.setState({
                 ads: sorted.map(el => [
                     el.name,
@@ -144,6 +146,37 @@ export function getAds(advertiserId, campaignId) {
                 ])
             });
         });
+}
+
+export function getPlacements(advertiserId, campaignId, siteId) {
+    gapi.client.request({
+        path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${profileId}/placements?advertiserIds=${advertiserId}&campaignIds=${advertiserId}${siteId ? 'siteIds=' + siteId : ""}&key=${apiKey}`
+    }).then(res => {
+        this.setState({
+            placements: res.result.placements.map(el => [
+                el.name,
+                el.id,
+                el.siteId,
+                el.keyName
+            ])
+        });
+    });
+}
+
+export function getCreatives(advertiserId, campaignId, siteId) {
+    gapi.client.request({
+        path: ``
+    }).then(res => {
+        this.setState({
+            creatives: res.result.creatives.map(el => [
+                el.name,
+                el.id,
+                el.advertiserId,
+                el.size.width,
+                el.size.height
+            ])
+        });
+    });
 }
 
 export function createPlacement(name, advertiserId, siteId, campaignId, height, width, startDate, endDate) {

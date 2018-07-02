@@ -73,13 +73,14 @@ class Dcm extends Component {
         <Button
           variant="contained"
           color="primary"
+          disabled={this.state.logged}
           className={classes.button}
           onClick={this.handleStart}
         >
           Start Authorize
         </Button>
+        
         <form className={classes.root} autoComplete="off">
-          {/* <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button> */}
           {this.state.advertisers ? (
             <OptionList
               className={classes.formControl}
@@ -98,7 +99,7 @@ class Dcm extends Component {
               handleSelect={this.handleSiteSelect}
             />
           ) : (
-            "First select Advertiser"
+            ""
           )}
           {this.state.campaigns ? (
             <OptionList
@@ -108,10 +109,10 @@ class Dcm extends Component {
               handleSelect={this.handleCampaignSelect}
             />
           ) : (
-            "Select Advertiser"
+            ""
           )}
         </form>
-        <Button color="primary" variant="contained" onClick={this.handleSend}>
+        <Button color="primary" variant="contained" disabled={!(this.state.selectedAdvertiser && this.state.selectedCampaign)} onClick={this.handleSend}>
           send to dcm
         </Button>
         <div>
