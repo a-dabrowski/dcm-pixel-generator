@@ -1,74 +1,25 @@
 import React, { Component } from "react";
 import OptionList from "./OptionList.jsx";
-import Loading from './Loading.jsx';
-import Button from '@material-ui/core/Button';
+import Loading from "./Loading.jsx";
+import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const styles = theme => ({
   root: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    //    flex
+    width: "100%",
+    justifyContent: "space-around"
   },
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 200
-  },
-  button: {
-    margin: theme.spacing.unit
   }
 });
-
-
-//creative
-//type (z palca) np Display -> creative advertiser
-
-
-
-//20843892 campaign id
-// placemnt crate -> give site id - > campaign id ->
-
-  //   "domain": "global",
-  //   "reason": "invalid",
-  //   "message": "11032 : Placement must have at least one tag format of its placement type." ARRAY OF CAPSLOCK VALUES
-  //  },
-  //  {
-  //   "domain": "global",
-  //   "reason": "required",
-  //   "message": "11096 : Placement rendering environment is required."
-  //  },
-  //  {
-  //   "domain": "global",
-  //   "reason": "required",
-  //   "message": "11029 : Placement pricing type is required."
-  //  },
-  //  {
-  //   "domain": "global",
-  //   "reason": "required",
-  //   "message": "11027 : Placement end date is required."
-  //  },
-  //  {
-  //   "domain": "global",
-  //   "reason": "required",
-  //   "message": "11026 : Placement start date is required."
-  //  },
-  //  {
-  //   "domain": "global",
-  //   "reason": "invalid",
-  //   "message": "11022 : Placement start date must be before or same as end date."
-  //  },
-  //  {
-  //   "domain": "global",
-  //   "reason": "required",
-  //   "message": "11020 : Placement name is required."
-  //  },
-  //  {
-  //   "domain": "global",
-  //   "reason": "required",
-  //   "message": "11085 : Placement payment source is required."
-  //  }
-  // ],
-  // "code": 400,
-  // "message": "11032 : Placement must have at least one tag format of its placement type."
 
 class Dcm extends Component {
   state = {
@@ -87,7 +38,6 @@ class Dcm extends Component {
   scopes =
     "https://www.googleapis.com/auth/dfareporting https://www.googleapis.com/auth/dfatrafficking";
   initClient = () => {
-    console.log('client init')
     this.gapi.client
       .init({
         apiKey: this.apiKey,
@@ -101,12 +51,11 @@ class Dcm extends Component {
         this.setState({
           logged: this.gapi.auth2.getAuthInstance().isSignedIn.get()
         });
-        console.log(this.gapi.auth2.getAuthInstance().isSignedIn.get());
         //TODO: listeners for authorize and signout click
       })
       .then(() => {
         this.getAdvertisers();
-      }).catch(err=>console.log(err));
+      });
   };
 
   getAdvertisers() {
@@ -149,7 +98,6 @@ class Dcm extends Component {
         },
         function(reason) {
           console.log(reason);
-          //return Error component
         }
       );
   }
@@ -168,54 +116,90 @@ class Dcm extends Component {
         })
       )
       .then(_ => console.log(this.state.campaigns));
-    console.log(this.state.campaigns);
+  }
+
+  getAds(advertiserId, campaignId) {
+    console.log(advertiserId, campaignId);
+    this.gapi.client
+      .request({
+        path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
+          this.profieId
+        }/ads?advertiserIds=${advertiserId}&campaignIds=${campaignId}&key=${
+          this.apiKey
+        }`
+      })
+      .then(res => {
+        this.setState({
+          ads: res.result.ads.map(el => [
+            el.name,
+            el.id,
+            el.placementAssigments,
+            el.creativeRotation.creativeAssignments
+          ])
+        });
+      });
   }
 
   handleSelect(event) {
     this.setState({
       selectedAdvertiser: event.target.value
     });
+    console.log("dcm", this.state.selectedAdvertiser);
     this.getSites();
     this.getCampaigns(event.target.value); // doesnt change rendered campaigns
   }
-  handleAuthorize = event => {
-    this.gapi.load('client:auth2', this.initClient);
-  }
+
   handleSiteSelect = event => {
     this.setState({ selectedSites: event.target.value });
+  };
+  handleStart = () => {
+    this.gapi.load("client:auth2", this.initClient);
   };
 
   handleCampaignSelect = event => {
     this.setState({ selectedCampaign: event.target.value });
   };
+
+  handleSend = () => {
+        this.getAds(this.state.selectedAdvertiser, this.state.selectedCampaign);
+  }
   render() {
     const { classes } = this.props;
     return (
       <div>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={this.handleStart}
+        >
+          Start Authorize
+        </Button>
         <form className={classes.root} autoComplete="off">
           {/* <button onClick={this.getAdvertisers.bind(this)}>Advertisers</button> */}
-
-          {this.state.sites ? (
-            <OptionList
-              name="Site"
-              data={this.state.sites}
-              handleSelect={this.handleSiteSelect}
-            />
-          ) : (
-            "Select Advertiser"
-          )}
-          {}
           {this.state.advertisers ? (
             <OptionList
+              className={classes.formControl}
               name="Advertiser"
               data={this.state.advertisers}
               handleSelect={this.handleSelect.bind(this)}
             />
           ) : (
-           <Loading />
+            <Loading />
+          )}
+          {this.state.sites ? (
+            <OptionList
+              className={classes.formControl}
+              name="Site"
+              data={this.state.sites}
+              handleSelect={this.handleSiteSelect}
+            />
+          ) : (
+            "First select Advertiser"
           )}
           {this.state.campaigns ? (
             <OptionList
+              className={classes.formControl}
               name="Campaign"
               data={this.state.campaigns}
               handleSelect={this.handleCampaignSelect}
@@ -224,14 +208,27 @@ class Dcm extends Component {
             "Select Advertiser"
           )}
         </form>
-
+        <Button color="primary" variant="contained" onClick={this.handleSend}>send to dcm</Button>
         <div>
-          <Button variant="contained" color="primary" className={classes.button} onClick={this.handleAuthorize}>Authorize</Button>
           <h1>
             {this.state.selectedAdvertiser || "Placeholder for Advertiser"}
           </h1>
           <h2>{this.state.selectedSites || "Placeholder for Sites"}</h2>
           <h3>{this.state.selectedCampaign || "Placeholder for Campaign"}</h3>
+      
+          {this.state.ads ? (
+            <List>
+              {this.state.ads.map(el => {
+                return (
+                  <ListItem>
+                    <ListItemText primary={el[0]} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     );
