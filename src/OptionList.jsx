@@ -24,7 +24,7 @@ class OptionList extends Component {
   render() {
     const options = this.props.data;
     return (
-      <FormControl className={this.props.formControl}>
+      <FormControl className={this.props.className}>
         <InputLabel htmlFor={this.props.labelName}>
           {this.props.name}
         </InputLabel>
