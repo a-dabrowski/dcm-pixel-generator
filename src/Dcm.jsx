@@ -66,6 +66,13 @@ class Dcm extends Component {
       this.state.selectedCampaign
     );
   };
+
+  handleSendCreatives = () => {
+    api.getCreatives.call(this, this.state.selectedAdvertiser, this.state.selectedCampaign, this.state.selectedSites);
+  }
+  handleSendPlacements = () => {
+    api.getPlacements.call(this, this.state.selectedAdvertiser, this.state.selectedCampaign, this.state.selectedSites);
+  }
   render() {
     const { classes } = this.props;
     return (
@@ -113,7 +120,13 @@ class Dcm extends Component {
           )}
         </form>
         <Button color="primary" variant="contained" disabled={!(this.state.selectedAdvertiser && this.state.selectedCampaign)} onClick={this.handleSend}>
-          send to dcm
+          send to dcm get ads
+        </Button>
+                <Button color="primary" variant="contained" disabled={!(this.state.selectedAdvertiser && this.state.selectedCampaign)} onClick={this.handleSendCreatives}>
+          send to dcm get creatives
+        </Button>
+        <Button color="primary" variant="contained" disabled={!(this.state.selectedAdvertiser && this.state.selectedCampaign)} onClick={this.handleSendPlacements}>
+          send to dcm placements
         </Button>
         <div>
           <h1>
@@ -125,6 +138,32 @@ class Dcm extends Component {
           {this.state.ads ? (
             <List>
               {this.state.ads.map(el => {
+                return (
+                  <ListItem>
+                    <ListItemText primary={el.name} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            ""
+          )}
+{this.state.placements ? (
+            <List>
+              {this.state.placements.map(el => {
+                return (
+                  <ListItem>
+                    <ListItemText primary={el.name} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            ""
+          )}
+{this.state.creatives ? (
+            <List>
+              {this.state.creatives.map(el => {
                 return (
                   <ListItem>
                     <ListItemText primary={el.name} />

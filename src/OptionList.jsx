@@ -18,7 +18,6 @@ class OptionList extends Component {
   };
   handleChange(event) {
     this.setState({ selection: event.target.value });
-    console.log(this.props);
     this.props.handleSelect(event);
   }
   render() {
