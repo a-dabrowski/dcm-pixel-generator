@@ -50,11 +50,10 @@ export function getAdvertisers() {
                         return 1;
                     }
                 })
-                const advertisers = sorted.map(el => [
-                    el.name,
-                    el.id,
-                    el.accountId
-                ]);
+                const advertisers = sorted.map(el => ({
+                    name: el.name,
+                    id: el.id,
+                }));
                 this.setState({
                     loaded: true,
                     advertisers: advertisers
@@ -81,11 +80,10 @@ export function getSites() {
                         return 1;
                     }
                 })
-                const sites = sorted.map(el => [
-                    el.name,
-                    el.id,
-                    el.accountId
-                ]);
+                const sites = sorted.map(el => ({
+                    name: el.name,
+                    id: el.id
+                }));
                 this.setState({
                     sites: sites
                 });
@@ -112,7 +110,12 @@ export function getCampaigns(advertiserId) {
                 }
             })
             this.setState({
-                campaigns: sorted.map(el => [el.name, el.id, el.startDate, el.endDate])
+                campaigns: sorted.map(el => ({
+                    name: el.name,
+                    id: el.id,
+                    start: el.startDate,
+                    end: el.endDate
+                }))
             })
         })
 }
@@ -127,7 +130,7 @@ export function getAds(advertiserId, campaignId) {
         }`
         })
         .then(res => {
-        
+
             const sorted = res.result.ads.sort((a, b) => {
                 if (a.name < b.name) {
                     return -1;
@@ -138,12 +141,12 @@ export function getAds(advertiserId, campaignId) {
             });
             console.log(sorted[1].placementAssigments);
             this.setState({
-                ads: sorted.map(el => [
-                    el.name,
-                    el.id,
-                    el.placementAssigments,
-                    el.creativeRotation.creativeAssignments
-                ])
+                ads: sorted.map(el => ({
+                    name: el.name,
+                    id: el.id,
+                    placements: el.placementAssigments,
+                    creatives: el.creativeRotation.creativeAssignments
+                }))
             });
         });
 }
@@ -153,12 +156,12 @@ export function getPlacements(advertiserId, campaignId, siteId) {
         path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${profileId}/placements?advertiserIds=${advertiserId}&campaignIds=${advertiserId}${siteId ? 'siteIds=' + siteId : ""}&key=${apiKey}`
     }).then(res => {
         this.setState({
-            placements: res.result.placements.map(el => [
-                el.name,
-                el.id,
-                el.siteId,
-                el.keyName
-            ])
+            placements: res.result.placements.map(el => ({
+                name: el.name,
+                id: el.id,
+                siteId: el.siteId,
+                keyName: el.keyName
+            }))
         });
     });
 }
@@ -168,13 +171,13 @@ export function getCreatives(advertiserId, campaignId, siteId) {
         path: ``
     }).then(res => {
         this.setState({
-            creatives: res.result.creatives.map(el => [
-                el.name,
-                el.id,
-                el.advertiserId,
-                el.size.width,
-                el.size.height
-            ])
+            creatives: res.result.creatives.map(el => ({
+                name: el.name,
+                id: el.id,
+                advertiserId: el.advertiserId,
+                width: el.size.width,
+                height: el.size.height
+            }))
         });
     });
 }

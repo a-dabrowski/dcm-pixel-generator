@@ -35,8 +35,8 @@ class OptionList extends Component {
         >
           {options.map(el => {
             return (
-              <MenuItem key={el[1]} value={el[1]}>
-                {el[0]}
+              <MenuItem key={el.id} value={el.id}>
+                {el.name}
               </MenuItem>
             );
           })}

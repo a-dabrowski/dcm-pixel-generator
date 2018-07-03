@@ -127,7 +127,7 @@ class Dcm extends Component {
               {this.state.ads.map(el => {
                 return (
                   <ListItem>
-                    <ListItemText primary={el[0]} />
+                    <ListItemText primary={el.name} />
                   </ListItem>
                 );
               })}
