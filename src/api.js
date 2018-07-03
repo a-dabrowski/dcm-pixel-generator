@@ -130,7 +130,7 @@ export function getAds(advertiserId, campaignId) {
         }`
         })
         .then(res => {
-
+            console.log(res.result.ads);
             const sorted = res.result.ads.sort((a, b) => {
                 if (a.name < b.name) {
                     return -1;
@@ -139,12 +139,12 @@ export function getAds(advertiserId, campaignId) {
                 }
 
             });
-            console.log(sorted[1].placementAssigments);
+            console.log(sorted);
             this.setState({
                 ads: sorted.map(el => ({
                     name: el.name,
                     id: el.id,
-                    placements: el.placementAssigments[0].placementId, //potential list of plural placements, for now focus on single placement
+                    placements: el.placementAssignments[0].placementId, //potential list of plural placements, for now focus on single placement
                     creatives: el.creativeRotation.creativeAssignments[0].creativeId, //same as above
                 }))
             });
