@@ -7,6 +7,14 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import * as api from "./api.js";
+import {
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
+} from "@material-ui/core";
 
 const styles = theme => ({
   root: {
@@ -14,7 +22,7 @@ const styles = theme => ({
     flexWrap: "wrap",
     flexDirection: "column",
     width: "75%",
-    margin:"auto",
+    margin: "auto",
     justifyContent: "space-around"
   },
   formControl: {
@@ -68,11 +76,21 @@ class Dcm extends Component {
   };
 
   handleSendCreatives = () => {
-    api.getCreatives.call(this, this.state.selectedAdvertiser, this.state.selectedCampaign, this.state.selectedSites);
-  }
+    api.getCreatives.call(
+      this,
+      this.state.selectedAdvertiser,
+      this.state.selectedCampaign,
+      this.state.selectedSites
+    );
+  };
   handleSendPlacements = () => {
-    api.getPlacements.call(this, this.state.selectedAdvertiser, this.state.selectedCampaign, this.state.selectedSites);
-  }
+    api.getPlacements.call(
+      this,
+      this.state.selectedAdvertiser,
+      this.state.selectedCampaign,
+      this.state.selectedSites
+    );
+  };
   render() {
     const { classes } = this.props;
     return (
@@ -86,7 +104,7 @@ class Dcm extends Component {
         >
           Start Authorize
         </Button>
-        
+
         <form className={classes.root} autoComplete="off">
           {this.state.advertisers ? (
             <OptionList
@@ -119,13 +137,34 @@ class Dcm extends Component {
             ""
           )}
         </form>
-        <Button color="primary" variant="contained" disabled={!(this.state.selectedAdvertiser && this.state.selectedCampaign)} onClick={this.handleSend}>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={
+            !(this.state.selectedAdvertiser && this.state.selectedCampaign)
+          }
+          onClick={this.handleSend}
+        >
           send to dcm get ads
         </Button>
-                <Button color="primary" variant="contained" disabled={!(this.state.selectedAdvertiser && this.state.selectedCampaign)} onClick={this.handleSendCreatives}>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={
+            !(this.state.selectedAdvertiser && this.state.selectedCampaign)
+          }
+          onClick={this.handleSendCreatives}
+        >
           send to dcm get creatives
         </Button>
-        <Button color="primary" variant="contained" disabled={!(this.state.selectedAdvertiser && this.state.selectedCampaign)} onClick={this.handleSendPlacements}>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={
+            !(this.state.selectedAdvertiser && this.state.selectedCampaign)
+          }
+          onClick={this.handleSendPlacements}
+        >
           send to dcm placements
         </Button>
         <div>
@@ -148,7 +187,7 @@ class Dcm extends Component {
           ) : (
             ""
           )}
-{this.state.placements ? (
+          {this.state.placements ? (
             <List>
               {this.state.placements.map(el => {
                 return (
@@ -161,7 +200,7 @@ class Dcm extends Component {
           ) : (
             ""
           )}
-{this.state.creatives ? (
+          {this.state.creatives ? (
             <List>
               {this.state.creatives.map(el => {
                 return (
@@ -175,6 +214,39 @@ class Dcm extends Component {
             ""
           )}
         </div>
+        {this.state.ads ? (
+          <Paper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Site</TableCell>
+                  <TableCell>Placement</TableCell>
+                  <TableCell>Ad</TableCell>
+                  <TableCell>Creative</TableCell>
+                  <TableCell>TITAN Display</TableCell>
+                  <TableCell>TITAN Video</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.ads.map(el => {
+                  console.log(this.state.creatives.find(n=> n.id == el.creatives))
+                  return (
+                    <TableRow key="1">
+                      <TableCell>Site</TableCell>
+                      <TableCell>{this.state.placements.find(n=> n.id===el.placements).name}</TableCell>
+                      <TableCell>{el.name}</TableCell>
+                      <TableCell>ads</TableCell>
+                      <TableCell>TITAN {el.placements} {el.creatives}</TableCell>
+                      <TableCell>VIDEO</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Paper>
+        ) : (
+          ""
+        )}
       </div>
     );
   }
