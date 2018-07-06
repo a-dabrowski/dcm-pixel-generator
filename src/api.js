@@ -21,9 +21,10 @@ export function initClient() {
             scope: scopes
         })
         .then(() => {
-            gapi.auth2
-                .getAuthInstance()
-                .isSignedIn.listen(this.updateSigninStatus); //TODO: Create function updateSigninStatus or maybe  AUTHINSTANCE reutrns null
+            gapi.auth2.getAuthInstance().signIn();//now this works
+            // gapi.auth2
+            //     .getAuthInstance()
+            //     .isSignedIn.listen(this.updateSigninStatus); //TODO: Create function updateSigninStatus or maybe  AUTHINSTANCE reutrns null
             this.setState({
                 logged: this.gapi.auth2.getAuthInstance().isSignedIn.get()
             });
