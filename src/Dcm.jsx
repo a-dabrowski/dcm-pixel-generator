@@ -118,22 +118,23 @@ class Dcm extends Component {
           ) : (
             ""
           )}
-          {this.state.sites ? (
-            <OptionList
-              className={classes.formControl}
-              name="Site"
-              data={this.state.sites}
-              handleSelect={this.handleSiteSelect}
-            />
-          ) : (
-            ""
-          )}
+
           {this.state.campaigns ? (
             <OptionList
               className={classes.formControl}
               name="Campaign"
               data={this.state.campaigns}
               handleSelect={this.handleCampaignSelect}
+            />
+          ) : (
+            ""
+          )}
+          {this.state.sites ? (
+            <OptionList
+              className={classes.formControl}
+              name="Site"
+              data={this.state.sites}
+              handleSelect={this.handleSiteSelect}
             />
           ) : (
             ""
@@ -173,11 +174,35 @@ class Dcm extends Component {
                 {this.state.ads.map(el => {
                   return (
                     <TableRow key="1">
-                      <TableCell>{this.state.sites.find(n=>n.id===this.state.placements.find(n=> n.id===el.placements).siteId).name}</TableCell>
-                      <TableCell>{this.state.placements.find(n=> n.id===el.placements).name}</TableCell>
+                      <TableCell>
+                        {
+                          this.state.sites.find(
+                            n =>
+                              n.id ===
+                              this.state.placements.find(
+                                n => n.id === el.placements
+                              ).siteId
+                          ).name
+                        }
+                      </TableCell>
+                      <TableCell>
+                        {
+                          this.state.placements.find(
+                            n => n.id === el.placements
+                          ).name
+                        }
+                      </TableCell>
                       <TableCell>{el.name}</TableCell>
                       <TableCell>PLACEHOLDER CREATIVE</TableCell>
-                      <TableCell>https://cc.pl.vtracy.de/click/tr?tr_adid=k{this.state.placements.find(n=> n.id===el.placements).siteId}_s{this.state.selectedSites}_p{el.placements}_c{el.creatives}&tr_m=pl&r=</TableCell>
+                      <TableCell>
+                        https://cc.pl.vtracy.de/click/tr?tr_adid=k{
+                          this.state.placements.find(
+                            n => n.id === el.placements
+                          ).siteId
+                        }_s{this.state.selectedSites}_p{el.placements}_c{
+                          el.creatives
+                        }&tr_m=pl&r=
+                      </TableCell>
                       <TableCell>VIDEO</TableCell>
                     </TableRow>
                   );
