@@ -68,6 +68,8 @@ class Dcm extends Component {
   };
 
   handleSend = () => {
+    this.handleSendPlacements();
+    //first get placements
     api.getAds.call(
       this,
       this.state.selectedAdvertiser,
@@ -114,7 +116,7 @@ class Dcm extends Component {
               handleSelect={this.handleSelect.bind(this)}
             />
           ) : (
-            <Loading />
+            ""
           )}
           {this.state.sites ? (
             <OptionList
@@ -147,74 +149,14 @@ class Dcm extends Component {
         >
           send to dcm get ads
         </Button>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={
-            !(this.state.selectedAdvertiser && this.state.selectedCampaign)
-          }
-          onClick={this.handleSendCreatives}
-        >
-          send to dcm get creatives
-        </Button>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={
-            !(this.state.selectedAdvertiser && this.state.selectedCampaign)
-          }
-          onClick={this.handleSendPlacements}
-        >
-          send to dcm placements
-        </Button>
         <div>
           <h1>
             {this.state.selectedAdvertiser || "Placeholder for Advertiser"}
           </h1>
           <h2>{this.state.selectedSites || "Placeholder for Sites"}</h2>
           <h3>{this.state.selectedCampaign || "Placeholder for Campaign"}</h3>
-
-          {this.state.ads ? (
-            <List>
-              {this.state.ads.map(el => {
-                return (
-                  <ListItem>
-                    <ListItemText primary={el.name} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          ) : (
-            ""
-          )}
-          {this.state.placements ? (
-            <List>
-              {this.state.placements.map(el => {
-                return (
-                  <ListItem>
-                    <ListItemText primary={el.name} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          ) : (
-            ""
-          )}
-          {this.state.creatives ? (
-            <List>
-              {this.state.creatives.map(el => {
-                return (
-                  <ListItem>
-                    <ListItemText primary={el.name} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          ) : (
-            ""
-          )}
         </div>
-        {this.state.ads ? (
+        {this.state.ads && this.state.placements ? (
           <Paper>
             <Table>
               <TableHead>
