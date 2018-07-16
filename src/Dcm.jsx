@@ -39,10 +39,11 @@ class Dcm extends Component {
     campaigns: null,
     selectedAdvertiser: null,
     selectedCampaign: null,
-    selectedSites: null
+    selectedSites: null,
+    profileIdList: null,
+    activeProfileId: process.env.REACT_APP_PROFILE
   };
   gapi = window.gapi;
-  profieId = process.env.REACT_APP_PROFILE;
   apiKey = process.env.REACT_APP_API_KEY;
   clientId = process.env.REACT_APP_CLIENT_ID;
   scopes =
@@ -108,6 +109,7 @@ class Dcm extends Component {
         </Button>
 
         <form className={classes.root} autoComplete="off">
+
           {this.state.advertisers ? (
             <OptionList
               className={classes.formControl}

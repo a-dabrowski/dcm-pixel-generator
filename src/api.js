@@ -1,5 +1,4 @@
 const gapi = window.gapi;
-const profileId = process.env.REACT_APP_PROFILE;
 const apiKey = process.env.REACT_APP_API_KEY;
 const clientId = process.env.REACT_APP_CLIENT_ID;
 const placementTags = ["PLACEMENT_TAG_IFRAME_JAVASCRIPT",
@@ -13,7 +12,6 @@ const placementTags = ["PLACEMENT_TAG_IFRAME_JAVASCRIPT",
 ];
 const scopes = "https://www.googleapis.com/auth/dfareporting https://www.googleapis.com/auth/dfatrafficking";
 export function initClient() {
-    console.log(this);
     gapi.client
         .init({
             apiKey: apiKey,
@@ -31,6 +29,7 @@ export function initClient() {
             //TODO: listeners for authorize and signout click
         })
         .then(() => {
+            getUserProfiles.call(this);
             getAdvertisers.call(this);
         });
 };
@@ -39,7 +38,7 @@ export function getAdvertisers() {
     gapi.client
         .request({
             path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
-          profileId
+          this.state.activeProfileId
         }/advertisers?key=${apiKey}`
         })
         .then(
@@ -69,7 +68,7 @@ export function getSites() {
     gapi.client
         .request({
             path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
-          profileId
+          this.state.activeProfileId
         }/sites?key=${apiKey}`
         })
         .then(
@@ -99,7 +98,7 @@ export function getCampaigns(advertiserId) {
     gapi.client
         .request({
             path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
-          profileId
+          this.state.activeProfileId
         }/campaigns?advertiserIds=${advertiserId}&key=${apiKey}`
         })
         .then(res => {
@@ -128,7 +127,7 @@ export function getUserProfiles() {
         })
         .then(res => {
             this.setState({
-                profileIdList: res.items
+                profileIdList: res.result.items
             });
         });
 }
@@ -137,7 +136,7 @@ export function getAds(advertiserId, campaignId) {
     gapi.client
         .request({
             path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${
-          profileId
+          this.state.activeProfileId
         }/ads?advertiserIds=${advertiserId}&campaignIds=${campaignId}&key=${
           apiKey
         }`
@@ -166,7 +165,7 @@ export function getAds(advertiserId, campaignId) {
 export function getPlacements(advertiserId, campaignId, siteId) {
     //siteId is optional
     gapi.client.request({
-        path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${profileId}/placements?advertiserIds=${advertiserId}&campaignIds=${campaignId}${siteId ? '&siteIds=' + siteId : ""}&key=${apiKey}`
+        path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${this.state.activeProfileId}/placements?advertiserIds=${advertiserId}&campaignIds=${campaignId}${siteId ? '&siteIds=' + siteId : ""}&key=${apiKey}`
     }).then(res => {
         this.setState({
             placements: res.result.placements.map(el => ({
@@ -182,7 +181,7 @@ export function getPlacements(advertiserId, campaignId, siteId) {
 export function getCreatives(advertiserId, campaignId, siteId) {
     //siteId is optional
     gapi.client.request({
-      path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${profileId}/creatives?advertiserIds=${advertiserId}&campaignIds=${campaignId}${siteId ? '&siteIds=' + siteId : ""}&key=${apiKey}`
+      path: `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${this.state.activeProfileId}/creatives?advertiserIds=${advertiserId}&campaignIds=${campaignId}${siteId ? '&siteIds=' + siteId : ""}&key=${apiKey}`
     }).then(res => {
         this.setState({
             creatives: res.result.creatives.map(el => ({
@@ -198,7 +197,7 @@ export function getCreatives(advertiserId, campaignId, siteId) {
 
 export function createPlacement(name, advertiserId, siteId, campaignId, height, width, startDate, endDate) {
     const dimensions = 'dynamic';
-    const ht = `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${this.profieId}/placements?key=${this.apiKey}`;
+    const ht = `https://www.googleapis.com/dfareporting/v3.1/userprofiles/${this.state.activeProfileId}/placements?key=${this.apiKey}`;
     const reqBody = {
         advertiserId: advertiserId,
         siteId: siteId,
