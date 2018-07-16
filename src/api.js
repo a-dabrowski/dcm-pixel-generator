@@ -126,8 +126,9 @@ export function getUserProfiles() {
             path: 'https://www.googleapis.com/dfareporting/v3.1/userprofiles'
         })
         .then(res => {
+            console.log(res);
             this.setState({
-                profileIdList: res.result.items
+                profileIdList: res.result.items.map(el => ({name: el.accountName, id: el.profileId }))
             });
         });
 }
