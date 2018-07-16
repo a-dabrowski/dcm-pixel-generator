@@ -41,7 +41,7 @@ class Dcm extends Component {
     selectedCampaign: null,
     selectedSites: null,
     profileIdList: null,
-    activeProfileId: process.env.REACT_APP_PROFILE
+    activeProfileId: null
   };
   gapi = window.gapi;
   apiKey = process.env.REACT_APP_API_KEY;
@@ -86,6 +86,13 @@ class Dcm extends Component {
       this.state.selectedSites
     );
   };
+
+  handleProfileChange = e => {
+    this.setState({ activeProfileId: e.target.value }, () => {
+      api.getAdvertisers.call(this);
+    });
+  };
+
   handleSendPlacements = () => {
     api.getPlacements.call(
       this,
@@ -110,7 +117,11 @@ class Dcm extends Component {
 
         <form className={classes.root} autoComplete="off">
           {this.state.profileIdList ? (
-            <OptionList name="Account" data={this.state.profileIdList} handleSelect={this.handleProfileChange} />
+            <OptionList
+              name="Account"
+              data={this.state.profileIdList}
+              handleSelect={this.handleProfileChange}
+            />
           ) : (
             ""
           )}

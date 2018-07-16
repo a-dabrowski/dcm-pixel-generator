@@ -30,7 +30,7 @@ export function initClient() {
         })
         .then(() => {
             getUserProfiles.call(this);
-            getAdvertisers.call(this);
+         //   getAdvertisers.call(this);
         });
 };
 
