@@ -103,11 +103,7 @@ export function getCampaigns(advertiserId) {
         })
         .then(res => {
             const sorted = res.result.campaigns.sort((a, b) => {
-                if (a.name < b.name) {
-                    return -1;
-                } else {
-                    return 1;
-                }
+                return a.id < b.id
             })
             this.setState({
                 campaigns: sorted.map(el => ({
