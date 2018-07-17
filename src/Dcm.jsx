@@ -65,11 +65,11 @@ class Dcm extends Component {
   };
 
   handleCampaignSelect = event => {
-    this.setState({ selectedCampaign: event.target.value });
+    this.setState({ selectedCampaign: event.target.value }, ()=> this.handleSendPlacements());
   };
 
   handleSend = () => {
-    this.handleSendPlacements();
+   // this.handleSendPlacements();
     //first get placements
     api.getAds.call(
       this,
@@ -162,7 +162,7 @@ class Dcm extends Component {
           color="primary"
           variant="contained"
           disabled={
-            !(this.state.selectedAdvertiser && this.state.selectedCampaign)
+            !(this.state.selectedAdvertiser && this.state.selectedCampaign && this.state.placements)
           }
           onClick={this.handleSend}
         >
