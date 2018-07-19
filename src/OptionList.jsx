@@ -29,7 +29,7 @@ class OptionList extends Component {
         </InputLabel>
         <Select
           name={this.props.name}
-          value={this.state.selection}
+          value={this.props.selection}
           onChange={this.handleChange.bind(this)}
         >
           {options.map(el => {

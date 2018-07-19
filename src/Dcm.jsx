@@ -28,6 +28,9 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 200
+  },
+  button: {
+    margin: 50
   }
 });
 
@@ -65,11 +68,13 @@ class Dcm extends Component {
   };
 
   handleCampaignSelect = event => {
-    this.setState({ selectedCampaign: event.target.value }, ()=> this.handleSendPlacements());
+    this.setState({ selectedCampaign: event.target.value }, () =>
+      this.handleSendPlacements()
+    );
   };
 
   handleSend = () => {
-   // this.handleSendPlacements();
+    // this.handleSendPlacements();
     //first get placements
     api.getAds.call(
       this,
@@ -98,13 +103,30 @@ class Dcm extends Component {
       this,
       this.state.selectedAdvertiser,
       this.state.selectedCampaign,
-      this.state.selectedSites
-    );
+      this.state.selectedSites,
+     );
+  };
+
+  reset = () => {
+    this.setState({
+      selectedAdvertiser: null,
+      selectedCampaign: null,
+      selectedSites: null,
+      activeProfileId: null
+    });
   };
   render() {
     const { classes } = this.props;
     return (
       <div>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={this.reset}
+          className={classes.button}
+        >
+          Clear Settings
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -121,6 +143,7 @@ class Dcm extends Component {
               name="Account"
               data={this.state.profileIdList}
               handleSelect={this.handleProfileChange}
+              selection={this.state.activeProfileId}
             />
           ) : (
             ""
@@ -132,6 +155,7 @@ class Dcm extends Component {
               name="Advertiser"
               data={this.state.advertisers}
               handleSelect={this.handleSelect.bind(this)}
+              selection={this.state.selectedAdvertiser}
             />
           ) : (
             ""
@@ -143,6 +167,7 @@ class Dcm extends Component {
               name="Campaign"
               data={this.state.campaigns}
               handleSelect={this.handleCampaignSelect}
+              selection={this.state.selectedCampaign}
             />
           ) : (
             ""
@@ -153,6 +178,7 @@ class Dcm extends Component {
               name="Site"
               data={this.state.sites}
               handleSelect={this.handleSiteSelect}
+              selection={this.state.selectedSites}
             />
           ) : (
             ""
@@ -162,7 +188,11 @@ class Dcm extends Component {
           color="primary"
           variant="contained"
           disabled={
-            !(this.state.selectedAdvertiser && this.state.selectedCampaign && this.state.placements)
+            !(
+              this.state.selectedAdvertiser &&
+              this.state.selectedCampaign &&
+              this.state.placements
+            )
           }
           onClick={this.handleSend}
         >
